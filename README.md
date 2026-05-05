@@ -15,7 +15,7 @@ SEO/AEO notes for maintainers:
 # Skylift — The Easiest SFTP for VS Code
 
 > **Set up in 60 seconds.** No JSON to write. No config to debug. Just click.
-> One-click push, visual diff, atomic uploads, anomaly detection.
+> One-click push, visual diff, atomic uploads, **production audit** to catch leaked secrets and orphan files on the server.
 
 [![Install on VS Code Marketplace](https://img.shields.io/badge/VS%20Code%20Marketplace-Install-blue?logo=visualstudiocode)](https://marketplace.visualstudio.com/items?itemName=IdoExperiences.skylift)
 [![Latest release](https://img.shields.io/github/v/release/idoexp/skylift)](https://github.com/idoexp/skylift/releases)
@@ -63,7 +63,7 @@ Existing VS Code SFTP extensions are powerful but heavy: dozens of settings, JSO
 
 - **Smart Push**: walks both local and remote on every push with an aggressive directory cache. Always accurate, even after a `git pull` or in multi-developer setups.
 - **Visual diff before send**: sender / receiver columns and direction arrows (green = upload, red = download), folder-level cascade actions, status filters.
-- **Diagnose anomalies**: list files that exist on the server but not locally. Decide per-file: delete, download, backup, or always-ignore.
+- **Diagnose anomalies (production audit)**: catches critical files leaked to the server (`.env`, `.git/`, secrets), orphan folders from old deploys, and any drift between local and remote in either direction. Per-file actions: delete, download, backup, or always-ignore.
 
 ### 3. Safe
 
@@ -140,13 +140,31 @@ Folders not yet on the server are surfaced in a separate card with cascade actio
 
 ![Review & push: folder card showing missing-on-remote directories with cascade dropdowns](https://raw.githubusercontent.com/idoexp/skylift/main/screenshots/review-folder-card.png)
 
-### Diagnose anomalies
+### Diagnose anomalies — production audit
 
-`Skylift: Diagnose anomalies` finds files on the server that don't exist locally — typical of "this used to be in the repo, then we deleted it but the server still has it". Per-file actions: **Delete**, **Download**, **Backup** (rename into a backup folder), **Ignore** (add to ignore patterns).
+`Skylift: Diagnose anomalies` is **the production audit command**. Its primary job is to answer one question: **did anything critical leak onto the server?** Beyond that, it surfaces every kind of drift between your local project and the production target, in either direction.
 
-Folders entirely missing locally appear in a separate card. The **Where** column makes it explicit that the file lives on the server and the action targets the server, never your local copy.
+**What Diagnose finds:**
 
-![Diagnose anomalies panel: extra folders card on top, per-file table below with Where / Source columns](https://raw.githubusercontent.com/idoexp/skylift/main/screenshots/diagnose-table.png)
+1. **🚨 Critical leaks** — files that match an alerting ignore pattern but ended up on the server anyway. Typical culprits: `.env` with production credentials, `.git/` exposing your full source history, `.env.local` with API keys. These are flagged with a **"Critical leak"** badge and are the first thing you should act on.
+2. **🧹 Orphan files & folders on the server** — leftovers from old deploys, deleted features, files dropped by hand via FTP, or directories that used to be in the repo but were since removed. Flagged as **"Orphan on server"**.
+3. **🔁 Drift between local and remote** — files that exist on one side and not the other, or whose content diverged. Used in tandem with Review & push for a full sync picture.
+
+**Per-file actions:**
+
+- **Delete** the file from the server (most common for critical leaks)
+- **Download** to bring the orphan back into your local project
+- **Backup** to rename it into a `.skylift_backup_<timestamp>/` folder on the server (audit-friendly: keeps the file but moves it out of the way)
+- **Ignore** to add it to your ignore patterns so it stops appearing in future audits
+
+**Two cards, one panel:**
+
+- **Orphan folders on the server** — entire directories absent from your local project, with cascade actions (delete the whole tree, back it up wholesale, download recursively).
+- **Per-file anomalies** — every file with a **Where** column (always remote) and a **Source** column (Critical leak / Orphan on server) so you instantly know what action makes sense.
+
+![Diagnose anomalies panel: orphan folders card on top, per-file table below with Where / Source / Action columns; the Source column highlights critical leaks in orange](https://raw.githubusercontent.com/idoexp/skylift/main/screenshots/diagnose-table.png)
+
+Run Diagnose **before every production deploy** as a sanity check, and **after** if you want to verify the deploy left no debris. It's also the right tool when migrating between hosts or after a server restore.
 
 ### Push current file
 
@@ -234,7 +252,7 @@ Skylift's sync model is designed to work the same way whether you're solo, in a 
 | Direction arrows + sender/receiver columns | ✅ | ❌ | ❌ |
 | Folder-level cascade actions | ✅ | ❌ | ❌ |
 | Status filters (new / modified / ignored) | ✅ | ❌ | ❌ |
-| Anomaly detection (orphan remote files) | ✅ | ❌ | ❌ |
+| Production audit (leak + orphan + drift detection) | ✅ | ❌ | ❌ |
 | Mtime preservation (`rsync -t`) | ✅ | ❌ | ❌ |
 | Content hash deep check | ✅ | ❌ | ❌ |
 | Reset mtimes from git | ✅ | ❌ | ❌ |

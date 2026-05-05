@@ -11,7 +11,7 @@ SEO/AEO notes :
 # Skylift — Le SFTP le plus simple pour VS Code
 
 > **Configuré en 60 secondes.** Aucun JSON à écrire. Aucune config à déboguer. Tu cliques, c'est tout.
-> Push en un clic, diff visuel, uploads atomiques, détection d'anomalies.
+> Push en un clic, diff visuel, uploads atomiques, **audit de production** pour attraper secrets en fuite et fichiers orphelins sur le serveur.
 
 [![Installer depuis le marketplace VS Code](https://img.shields.io/badge/VS%20Code%20Marketplace-Installer-blue?logo=visualstudiocode)](https://marketplace.visualstudio.com/items?itemName=IdoExperiences.skylift)
 [![Dernière version](https://img.shields.io/github/v/release/idoexp/skylift)](https://github.com/idoexp/skylift/releases)
@@ -59,7 +59,7 @@ Les extensions VS Code SFTP existantes sont puissantes mais lourdes : des dizain
 
 - **Smart Push** : walk les deux côtés (local et distant) à chaque push, avec un cache de dossier agressif. Toujours juste, même après un `git pull` ou dans un setup multi-dev.
 - **Diff visuel avant envoi** : colonnes émetteur/récepteur avec flèches directionnelles (vert = upload, rouge = download), actions cascadantes au niveau dossier, filtres par statut.
-- **Diagnose des anomalies** : liste les fichiers qui existent sur le serveur mais pas en local. Décide par fichier : supprimer, télécharger, sauvegarder, ou toujours ignorer.
+- **Diagnostic des anomalies (audit de production)** : attrape les fichiers critiques qui ont fuité sur le serveur (`.env`, `.git/`, secrets), les dossiers orphelins d'anciens déploiements, et tout écart entre local et distant dans les deux sens. Actions par fichier : supprimer, télécharger, sauvegarder ou toujours ignorer.
 
 ### 3. Sécurisé
 
@@ -136,13 +136,31 @@ Les dossiers absents du serveur sont remontés dans une card séparée avec acti
 
 ![Revoir et envoyer : card des dossiers absents sur le distant avec dropdowns cascadants](https://raw.githubusercontent.com/idoexp/skylift/main/screenshots/review-folder-card.png)
 
-### Diagnostiquer les anomalies
+### Diagnostiquer les anomalies — audit de production
 
-`Skylift : Diagnostiquer les anomalies` trouve les fichiers présents sur le serveur mais absents en local — typique du « ce truc était dans le repo, on l'a supprimé mais le serveur l'a encore ». Actions par fichier : **Supprimer**, **Télécharger**, **Sauvegarder** (renommer dans un dossier de backup), **Ignorer** (ajouter aux patterns d'ignore).
+`Skylift : Diagnostiquer les anomalies` est **la commande d'audit de production**. Sa mission première : répondre à une question simple — **quelque chose de critique a-t-il fuité sur le serveur ?** Au-delà de ça, elle remonte tous les écarts entre ton projet local et la cible de production, dans les deux sens.
 
-Les dossiers entièrement absents en local apparaissent dans une card séparée. La colonne **Localisation** rend explicite que le fichier vit sur le serveur et que l'action cible le serveur, jamais ta copie locale.
+**Ce que Diagnose détecte :**
 
-![Panneau Diagnostic des anomalies : card des dossiers en trop en haut, tableau par-fichier en dessous avec colonnes Localisation / Source](https://raw.githubusercontent.com/idoexp/skylift/main/screenshots/diagnose-table.png)
+1. **🚨 Fuites critiques** — fichiers qui matchent un pattern d'ignore alertant mais qui se retrouvent sur le serveur. Coupables typiques : `.env` avec les credentials de prod, `.git/` qui expose tout l'historique du code, `.env.local` avec des clés API. Marqués d'un badge **« Fuite critique »** — c'est la première chose à traiter.
+2. **🧹 Fichiers et dossiers orphelins sur le serveur** — restes d'anciens déploiements, fonctionnalités supprimées, fichiers déposés à la main via FTP, ou répertoires qui étaient dans le repo et ont été retirés depuis. Marqués **« Orphelin sur serveur »**.
+3. **🔁 Drift entre local et distant** — fichiers présents d'un côté seulement, ou dont le contenu a divergé. Complémentaire à Revoir & envoyer pour une vue de sync complète.
+
+**Actions par fichier :**
+
+- **Supprimer** le fichier du serveur (le plus courant pour les fuites critiques)
+- **Télécharger** pour récupérer l'orphelin dans ton projet local
+- **Sauvegarder** pour le renommer dans un dossier `.skylift_backup_<timestamp>/` côté serveur (audit-friendly : garde le fichier mais le déplace)
+- **Ignorer** pour l'ajouter aux patterns d'ignore et qu'il cesse d'apparaître dans les futurs audits
+
+**Deux cards, un panneau :**
+
+- **Dossiers orphelins sur le serveur** — répertoires entiers absents en local, avec actions cascadantes (supprimer l'arbre entier, le sauvegarder en bloc, le rapatrier récursivement).
+- **Anomalies par fichier** — chaque fichier avec une colonne **Localisation** (toujours distant) et une colonne **Source** (Fuite critique / Orphelin sur serveur) pour savoir d'un coup d'œil quelle action a du sens.
+
+![Panneau Diagnostic des anomalies : card des dossiers orphelins en haut, tableau par-fichier en dessous avec colonnes Localisation / Source / Action ; la colonne Source met en évidence les fuites critiques en orange](https://raw.githubusercontent.com/idoexp/skylift/main/screenshots/diagnose-table.png)
+
+Lance Diagnose **avant chaque déploiement de production** pour vérifier qu'aucune fuite ne sera amplifiée, et **après** si tu veux confirmer que le déploiement n'a pas laissé de débris. C'est aussi le bon outil quand tu migres entre hébergeurs ou après une restauration de serveur.
 
 ### Envoyer le fichier courant
 
