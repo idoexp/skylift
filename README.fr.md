@@ -162,9 +162,15 @@ Les dossiers absents du serveur sont remontés dans une card séparée avec acti
 
 Lance Diagnose **avant chaque déploiement de production** pour vérifier qu'aucune fuite ne sera amplifiée, et **après** si tu veux confirmer que le déploiement n'a pas laissé de débris. C'est aussi le bon outil quand tu migres entre hébergeurs ou après une restauration de serveur.
 
-### Envoyer le fichier courant
+### Envoyer le fichier courant (un fichier, trois façons)
 
-Clic droit sur n'importe quel fichier dans l'éditeur → **Skylift : Envoyer le fichier courant**, ou `Ctrl+Alt+P` / `⌘⌥P`. Upload single-file via la cible active.
+Trois manières équivalentes d'envoyer le fichier sur lequel tu travailles, sans ouvrir le panneau Push code complet :
+
+- **Clic droit dans l'éditeur** → **Skylift : Envoyer le fichier courant**
+- **Clic droit dans l'Explorateur** (l'arborescence de fichiers dans la sidebar de gauche) sur n'importe quel fichier → **Skylift : Envoyer le fichier courant**
+- **Raccourci clavier** : `Ctrl+Alt+P` (Windows / Linux) ou `⌘⌥P` (macOS) avec le fichier ouvert
+
+Upload single-file via la cible active. Pratique pour les quick fixes, hotfixes, ou quand tu n'as touché qu'un fichier et que tu ne veux pas attendre le scan diff complet.
 
 ### Comparer avec le distant
 

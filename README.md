@@ -166,9 +166,15 @@ Folders not yet on the server are surfaced in a separate card with cascade actio
 
 Run Diagnose **before every production deploy** as a sanity check, and **after** if you want to verify the deploy left no debris. It's also the right tool when migrating between hosts or after a server restore.
 
-### Push current file
+### Push current file (one file, three ways)
 
-Right-click any file in the editor → **Skylift: Push current file**, or press `Ctrl+Alt+P` / `⌘⌥P`. Single-file upload via the active target.
+Three equivalent ways to push the file you're working on, without opening the full Push code panel:
+
+- **Right-click in the editor** → **Skylift: Push current file**
+- **Right-click in the Explorer** (the file tree on the left sidebar) on any file → **Skylift: Push current file**
+- **Keyboard shortcut**: `Ctrl+Alt+P` (Windows / Linux) or `⌘⌥P` (macOS) while the file is open
+
+Single-file upload via the active target. Useful for quick fixes, hotfixes, or when you've only touched one file and don't want to wait for the full diff scan.
 
 ### Compare with remote
 

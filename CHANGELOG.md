@@ -2,6 +2,13 @@
 
 All notable changes to the Skylift extension are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.2] - 2026-05-05
+
+### Changed
+
+- **Marketplace listing**: shipped the polished, marketing-grade README (English + French) directly inside the `.vsix`, with absolute URLs to screenshots hosted on the public GitHub repo. Earlier versions shipped a minimal placeholder README, which led to a broken hero image on the marketplace listing.
+- **Diagnose anomalies**: reframed all user-visible strings around the primary purpose — production audit. The sidebar card subtitle, panel subtitle, source badges (`Critical leak`, `Orphan on server`) and folder card title now lead with security/audit framing instead of generic "find extra remote files".
+
 ## [0.3.0] - 2026-05-05
 
 ### Changed
