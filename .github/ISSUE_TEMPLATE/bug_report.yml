@@ -1,0 +1,97 @@
+name: 🐛 Bug report
+description: Skylift is misbehaving — connection issue, wrong diff, broken upload, etc.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug! Detailed information helps a lot.
+        Before submitting, please check the [Troubleshooting](https://github.com/idoexp/skylift#troubleshooting) section of the README.
+
+  - type: input
+    id: skylift-version
+    attributes:
+      label: Skylift version
+      description: |
+        Find it in the Extensions panel (click Skylift, the version is at the top right) or in the marketplace listing.
+      placeholder: e.g. 0.3.0
+    validations:
+      required: true
+
+  - type: input
+    id: vscode-version
+    attributes:
+      label: VS Code version
+      description: '`Help → About` (Windows / Linux) or `Code → About Visual Studio Code` (macOS).'
+      placeholder: e.g. 1.95.2
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Windows 10 / 11
+        - macOS (Intel)
+        - macOS (Apple Silicon)
+        - Linux
+        - Other (please describe in the steps)
+    validations:
+      required: true
+
+  - type: input
+    id: server
+    attributes:
+      label: SFTP server (if known)
+      description: e.g. OpenSSH 9.x on Debian, AWS Transfer Family, Bitvise, your hosting provider.
+      placeholder: e.g. OpenSSH 8.4 on Ubuntu 20.04 LTS
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+      placeholder: I expected Skylift to upload only the files I changed.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: What actually happened?
+      placeholder: Skylift uploaded all 800 files even though I only changed one.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Number them, and please include the exact actions in the UI / commands run.
+      placeholder: |
+        1. Open project X with target Y configured.
+        2. Edit `assets/style.css`.
+        3. Run `Skylift: Push code` from the palette.
+        4. Observe that 800 files appear in the Apply phase.
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Skylift logs
+      description: |
+        Open the Output panel (`Ctrl+Shift+U`) and select **Skylift** in the dropdown. Paste the relevant lines here.
+        Enable Settings → Debug logs for more verbose output if needed.
+      render: shell
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Pre-flight check
+      options:
+        - label: I checked the README's Troubleshooting section.
+          required: true
+        - label: I'm not pasting credentials, host names or any other private data in this issue.
+          required: true

@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📚 Documentation & Troubleshooting
+    url: https://github.com/idoexp/skylift#troubleshooting
+    about: Most common issues are covered in the README's Troubleshooting section.
+  - name: 💬 Marketplace listing
+    url: https://marketplace.visualstudio.com/items?itemName=IdoExperiences.skylift
+    about: Rate the extension or read recent user feedback.
+  - name: 🔒 Security issue
+    url: https://github.com/idoexp
+    about: Please email the maintainer privately for vulnerabilities. Do NOT open a public issue.

@@ -1,0 +1,40 @@
+name: 💡 Feature request
+description: Suggest an improvement or a new capability.
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you trying to solve?
+      description: Describe the use case. What's painful about the current workflow?
+      placeholder: When deploying to multiple staging servers, I have to switch active target manually for each push.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: What would the ideal solution look like?
+      description: A button? A new command? A config option? Be as concrete as you can.
+      placeholder: A multi-target push that fans out to N servers in parallel, with a per-target progress bar.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Did you find a workaround? Did another extension solve it differently?
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: How important is this to your workflow?
+      options:
+        - Nice to have — minor improvement
+        - Useful — happens occasionally and is annoying
+        - Important — happens often and forces me to switch tools
+        - Blocker — I can't use Skylift today because of this
+    validations:
+      required: true
