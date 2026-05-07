@@ -192,6 +192,15 @@ Settings → Auto-upload à la sauvegarde : envoie le fichier courant à chaque 
 
 Settings → Déclencheur Git → liste de branches surveillées (ex. `main`, `production`). Quand tu commits sur une branche surveillée, Skylift déclenche un push. Pratique pour les environnements de staging liés à une branche.
 
+### Auto-scan en arrière-plan (Revoir et envoyer)
+
+Settings → Auto-scan de Revoir et envoyer (désactivé par défaut). Quand l'option est activée, Skylift lance un scan de Revoir en arrière-plan à une cadence configurable (1 min à 1 heure). Deux bénéfices :
+
+- **La pastille de l'activity bar reste à jour** — le compteur de fichiers en attente d'upload est toujours frais, tu n'as pas besoin d'ouvrir le panneau pour connaître l'état de la cible.
+- **Revoir et envoyer s'ouvre instantanément** — pas de temps de scan à l'ouverture, les résultats viennent du cache d'arrière-plan. Un bandeau « dernier scan il y a X min » avec un bouton de rafraîchissement manuel s'affiche en haut du panneau.
+
+Mis en pause automatiquement pendant un Push, dans les workspaces non sécurisés et quand aucune cible n'est active. Diagnostic n'est pas affecté — il scanne toujours à l'ouverture.
+
 ### Smart Push (workflow équipe sans config)
 
 Push code walk les deux côtés à chaque exécution. Combiné à **Considérer même taille = même contenu** (ON par défaut, mirror les défauts `rclone` / `rsync`) et à la **préservation de mtime** par fichier (rsync `-t`), le diff de Skylift est précis quel que soit le setup : solo, équipe, avec ou sans git, après un `git pull` ou non.

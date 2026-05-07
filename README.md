@@ -196,6 +196,15 @@ Settings → Auto-upload on save: pushes the current file every time you save it
 
 Settings → Git push trigger → list watched branches (e.g. `main`, `production`). When you commit on a watched branch, Skylift fires a push. Useful for staging environments tied to a branch.
 
+### Background auto-scan (Review)
+
+Settings → Review auto-scan (off by default). When enabled, Skylift runs a Review scan in the background at a configurable cadence (1 min to 1 hour). Two benefits:
+
+- **Activity-bar badge stays fresh** — the count of pending uploads is always up to date, you don't have to open the panel to know the state of the target.
+- **Review & push opens instantly** — no scan delay on open, results come straight from the background cache. A "last scan X min ago" banner with a manual refresh button is shown at the top of the panel.
+
+Paused automatically while a Push is running, in untrusted workspaces, and when no active target is set. Diagnose anomalies is unaffected — it always scans on open.
+
 ### Smart Push (zero-config team workflow)
 
 Push code walks both sides on every run. Combined with **Trust same-size** (default ON, mirrors `rclone`/`rsync` defaults) and per-file **mtime preservation** (rsync `-t`), Skylift's diff is accurate regardless of whether you work alone, in a team, with or without git, and regardless of mtime drift after a `git pull`.

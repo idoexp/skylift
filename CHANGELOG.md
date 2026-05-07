@@ -2,6 +2,22 @@
 
 All notable changes to the Skylift extension are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.4] - 2026-05-07
+
+### Added
+
+- **Review auto-scan** (Settings → Review auto-scan, off by default). Runs a Review scan in the background at a configurable cadence (1 min to 1 hour). Keeps the activity-bar badge fresh and lets Review & push open instantly with cached results (a "last scan X min ago" banner with a manual refresh button is shown at the top of the panel). Paused while a Push is running, in untrusted workspaces, and when no active target is set. Diagnose anomalies is unaffected — it always scans on open.
+- **Live counter updates**: after applying actions in Review & push or Diagnose anomalies, the activity-bar badge updates in real time without waiting for the next scan.
+
+### Changed
+
+- **Friendlier network error**: "host unreachable" / DNS errors now surface a clear, localized message ("Cannot reach the host - check the server address or your network connection.") instead of the raw Node.js error code.
+- **Settings UI cleanup**: removed the floating green bell badge that used to overlay alert-enabled chips. The chip's bell icon now has a green background that conveys the same state.
+
+### Fixed
+
+- **Activity-bar badge after cold start**: the upload count computed by the background auto-scan now applies immediately the moment you open the Skylift sidebar (previously the badge stayed empty until the next tick because the webview view wasn't yet resolved).
+
 ## [0.3.2] - 2026-05-05
 
 ### Changed
