@@ -2,6 +2,13 @@
 
 All notable changes to the Skylift extension are documented here. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.5] - 2026-05-07
+
+### Fixed
+
+- **Push current file via right-click in Explorer**: the command now uses the URI of the right-clicked file instead of the active editor's file. Previously, right-clicking `fileB` in the Explorer while `fileA` was open in the editor would push `fileA`'s content to `fileA`'s remote path, leaving `fileB` untouched.
+- **Push current file with unsaved edits**: the document is now saved to disk before upload. Previously, `fastPut` would ship the stale on-disk version (often identical to what's already on the server) and `setMtime` would still update the remote mtime - making the operation appear to "succeed" while the content didn't actually change.
+
 ## [0.3.4] - 2026-05-07
 
 ### Added
